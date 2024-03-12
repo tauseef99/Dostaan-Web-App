@@ -27,12 +27,13 @@ app.use(express.static(path.join(__dirname, "./frontend/build")));
 
 // Route all requests to React app's index.html
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "./frontend/build/index.html"), (err) => {
-    if (err) {
-      console.error("Error sending index.html:", err);
-      res.status(500).send("Internal Server Error");
-    }
-  });
+  try {
+    const indexPath = path.join(__dirname, "./frontend/build/index.html");
+    res.sendFile(indexPath);
+  } catch (err) {
+    console.error("Error sending index.html:", err);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 app.listen(port, () => {
