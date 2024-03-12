@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = process.env.port || 4003;
+const port = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 const { mongoUrl } = require("./keys");
 const cors = require("cors");
@@ -16,25 +16,25 @@ app.use(require("./routes/user"));
 mongoose.connect(mongoUrl);
 
 mongoose.connection.on("connected", () => {
-  console.log("successfully connted to mongodb");
+  console.log("Successfully connected to MongoDB");
 });
-mongoose.connection.on("error", () => {
-  console.log("not connted to mongodb");
+mongoose.connection.on("error", (err) => {
+  console.error("Connection to MongoDB failed:", err);
 });
 
-//frontend serving into backend
-
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, "./frontend/build")));
 
+// Route all requests to React app's index.html
 app.get("*", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "./frontend/build/index.html"),
-    function (err) {
-      res.status(500).send(err);
+  res.sendFile(path.join(__dirname, "./frontend/build/index.html"), (err) => {
+    if (err) {
+      console.error("Error sending index.html:", err);
+      res.status(500).send("Internal Server Error");
     }
-  );
+  });
 });
 
 app.listen(port, () => {
-  console.log("server is running on port " + port);
+  console.log("Server is running on port " + port);
 });
