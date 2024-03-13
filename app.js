@@ -26,15 +26,19 @@ mongoose.connection.on("error", (err) => {
 app.use(express.static(path.join(__dirname, "./frontend/build")));
 
 // Route all requests to React app's index.html
-app.get("*", (req, res) => {
-  try {
-    const indexPath = path.join(__dirname, "./frontend/build/index.html");
-    res.sendFile(indexPath);
-  } catch (err) {
-    console.error("Error sending index.html:", err);
-    res.status(500).send("Internal Server Error");
-  }
+app.get("*", function (req, res) {
+  const index = path.join(__dirname, "build", "index.html");
+  res.sendFile(index);
 });
+// app.get("*", (req, res) => {
+//   try {
+//     const indexPath = path.join(__dirname, "./frontend/build/index.html");
+//     res.sendFile(indexPath);
+//   } catch (err) {
+//     console.error("Error sending index.html:", err);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
 
 app.listen(port, () => {
   console.log("Server is running on port " + port);
