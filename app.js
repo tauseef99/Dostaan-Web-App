@@ -26,9 +26,14 @@ mongoose.connection.on("error", (err) => {
 app.use(express.static(path.join(__dirname, "./frontend/build")));
 
 // Route all requests to React app's index.html
-app.get("*", function (req, res) {
-  const index = path.join(__dirname, "build", "index.html");
-  res.sendFile(index);
+app.use(express.static(path.join(__dirname, "./frontend/build")));
+app.get("*", function (_, res) {
+  res.sendFile(
+    path.join(__dirname, "./frontend/build/index.html"),
+    function (err) {
+      res.status(500).send(err);
+    }
+  );
 });
 // app.get("*", (req, res) => {
 //   try {
